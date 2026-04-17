@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { all, type EngineConstraint, type KnownUrl } from 'module-replacements';
+	import { highlight } from './highlight.remote';
 
 	let { params } = $props();
 
@@ -124,7 +125,8 @@
 						<p class="description">{data.description}</p>
 						{#if data.example}
 							<p class="comment">// example</p>
-							<pre><code>{data.example}</code></pre>
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+							{@html await highlight(data.example)}
 						{/if}
 					{:else if data.type === 'removal'}
 						<p class="description">{data.description}</p>
@@ -267,21 +269,9 @@
 		margin-top: 1rem;
 	}
 
-	pre {
-		background: var(--code-bg);
-		border: 1px solid var(--border);
-		border-radius: 6px;
-		padding: 1rem;
+	.replacement :global(pre) {
 		overflow-x: auto;
-		margin: 0.5rem 0 0;
-	}
-
-	code {
-		font-family: inherit;
-		font-size: 0.8rem;
-		white-space: pre-wrap;
-		word-break: break-word;
-		color: var(--text);
+		padding: 1.5rem;
 	}
 
 	.engine-filters {
