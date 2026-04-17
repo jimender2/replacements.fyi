@@ -32,8 +32,16 @@
 	function get_url(url: KnownUrl): string {
 		if (typeof url === 'string') return url;
 		if (url.type === 'mdn') return `https://developer.mozilla.org/en-US/docs/${url.id}`;
-		if (url.type === 'e18e') return `https://e18e.dev/guide/module-replacements/${url.id}`;
-		return '#';
+		if (url.type === 'e18e')
+			return `https://github.com/e18e/module-replacements/tree/main/docs/modules/${url.id}.md`;
+		return `https://nodejs.org/${url.id}`;
+	}
+
+	function get_url_display_name(url: KnownUrl): string {
+		if (typeof url === 'string') return url;
+		if (url.type === 'mdn') return `MDN`;
+		if (url.type === 'e18e') return `e18e docs`;
+		return `Node.js docs`;
 	}
 
 	function filtered_engines(engines: EngineConstraint[] | undefined) {
@@ -90,7 +98,9 @@
 							<p class="doc-link">
 								→ docs:
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={get_url(data.url)} target="_blank" rel="noopener">{get_url(data.url)}</a>
+								<a href={get_url(data.url)} target="_blank" rel="noopener"
+									>{get_url_display_name(data.url)}</a
+								>
 							</p>
 						{/if}
 						{#if data.engines && data.engines.length > 0}
@@ -124,7 +134,9 @@
 							→ docs:
 							<p class="doc-link">
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={get_url(data.url)} target="_blank" rel="noopener">{get_url(data.url)}</a>
+								<a href={get_url(data.url)} target="_blank" rel="noopener"
+									>{get_url_display_name(data.url)}</a
+								>
 							</p>
 						{/if}
 						{#if data.replacementModule}
