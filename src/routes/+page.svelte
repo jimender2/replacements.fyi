@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { all } from 'module-replacements';
 	import Autocomplete from '$lib/Autocomplete.svelte';
+	import MrE18e from '$lib/MrE18e.svelte';
 
 	const examples = ['is-number', 'left-pad', 'is-array', 'object-assign'];
 	const packages = Object.keys(all.mappings);
@@ -11,7 +12,7 @@
 <div class="page">
 	<div class="container">
 		<div class="title">
-			<span class="namespace">mr</span><span class="method">.e18e</span>
+			<MrE18e />
 		</div>
 
 		<p class="params">
@@ -28,6 +29,8 @@
 				const form_data = new FormData(e.currentTarget);
 				const package_name = form_data.get('package');
 				if (package_name) {
+					const input = e.currentTarget.querySelector('input')!;
+					input.style.setProperty('view-transition-name', 'package-name');
 					goto(resolve('/[package]', { package: encodeURIComponent(package_name.toString()) }));
 				}
 			}}
@@ -55,7 +58,6 @@
 <style>
 	.page {
 		min-height: 100vh;
-		font-family: 'IBM Plex Mono', 'SF Mono', 'Cascadia Code', Consolas, monospace;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -72,16 +74,6 @@
 		margin-bottom: 0.5rem;
 		font-size: 3.5rem;
 		line-height: 1;
-	}
-
-	.namespace {
-		color: var(--subtle);
-		font-weight: 400;
-	}
-
-	.method {
-		color: var(--text);
-		font-weight: 700;
 	}
 
 	.params {
