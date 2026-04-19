@@ -24,3 +24,6 @@ vite.config.ts.timestamp-*
 # Playwright
 test-results
 .old
+
+.dev.vars*
+!.dev.vars.example
