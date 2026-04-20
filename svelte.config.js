@@ -9,7 +9,7 @@ const config = {
 		experimental: { async: true }
 	},
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({ fallback: '404.html' }),
 		experimental: { remoteFunctions: true },
 		prerender: {
 			entries: Object.keys(all.mappings).map((key) => `/${encodeURIComponent(key)}`)

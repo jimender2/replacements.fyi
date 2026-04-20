@@ -4,7 +4,8 @@
 	"compatibility_date": "2026-04-19",
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": {
-		"directory": "build"
+		"directory": "build",
+		"not_found_handling": "404-page"
 	},
 	"workers_dev": true,
 	"preview_urls": true,
