@@ -42,11 +42,11 @@
 
 		<div class="examples">
 			<span class="examples-header">// examples</span>
-			<div class="examples-list">
+			<ul class="examples-list">
 				{#each examples as name (name)}
-					<a href={resolve('/[package]', { package: encodeURIComponent(name) })}>· {name}</a>
+					<li><a href={resolve('/[package]', { package: encodeURIComponent(name) })}>{name}</a></li>
 				{/each}
-			</div>
+			</ul>
 		</div>
 
 		<a href="https://e18e.dev" class="powered-by" target="_blank" rel="noopener"
@@ -142,6 +142,15 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
+		padding: 0;
+		margin: 0;
+		list-style-position: inside;
+	}
+
+	.examples-list li::marker {
+		content: '· ';
+		color: var(--accent);
+		font-size: 0.875rem;
 	}
 
 	.examples-list a {
