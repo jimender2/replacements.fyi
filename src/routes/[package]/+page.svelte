@@ -106,11 +106,22 @@
 								{#each categories as cat, i (cat.label)}
 									<details name="engine-category-{key}" class="engine-tab" open={i === 0}>
 										<summary class="tab-btn" style:--n={i + 1}>{cat.label}</summary>
-										<ul class="engine-list">
-											{#each cat.engines as eng (eng.engine)}
-												<li>· {eng.engine} >= {eng.minVersion ?? '?'}</li>
-											{/each}
-										</ul>
+										<table class="engine-table">
+											<thead>
+												<tr>
+													<th>engine</th>
+													<th>min version</th>
+												</tr>
+											</thead>
+											<tbody>
+												{#each cat.engines as eng (eng.engine)}
+													<tr>
+														<td>{eng.engine}</td>
+														<td>{eng.minVersion ?? '?'}</td>
+													</tr>
+												{/each}
+											</tbody>
+										</table>
 									</details>
 								{/each}
 							</div>
@@ -286,7 +297,7 @@
 		grid-template-columns: subgrid;
 		grid-template-rows: subgrid;
 		grid-column: 1 / -1;
-		grid-row: 1 / span calc(var(--tab-count) - 1);
+		grid-row: 1 / -1;
 	}
 
 	.engine-tab[open] > .tab-btn {
@@ -298,6 +309,30 @@
 		grid-row: 2;
 		grid-column: 1 / -1;
 		padding: 0.5rem 1rem;
+	}
+
+	.engine-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.8rem;
+	}
+
+	.engine-table th {
+		text-align: left;
+		color: var(--subtle);
+		font-weight: 400;
+		padding: 0.25rem 0.5rem;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.engine-table td {
+		padding: 0.3rem 0.5rem;
+		color: var(--muted);
+	}
+
+	.engine-table td:last-child {
+		color: var(--accent);
+		font-weight: 600;
 	}
 
 	.tab-btn {
@@ -320,6 +355,10 @@
 
 	.tab-btn:hover {
 		background: var(--accent-tint);
+	}
+
+	.engine-tab:last-of-type > .tab-btn {
+		border-right: none;
 	}
 
 	.tab-btn::marker,
