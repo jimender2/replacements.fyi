@@ -38,7 +38,6 @@
 			<li>
 				<a href={resolve('/[package]', { package: encodeURIComponent(pkg) })} class="package-link">
 					<span class="package-name">{pkg}</span>
-					<span class="package-type">{all.mappings[pkg].type}</span>
 				</a>
 			</li>
 		{/each}
@@ -141,14 +140,6 @@
 	.package-name {
 		font-weight: 500;
 		color: var(--accent);
-	}
-
-	.package-type {
-		font-size: 0.75rem;
-		color: var(--muted);
-		background: var(--code-bg);
-		padding: 0.2rem 0.5rem;
-		border-radius: 4px;
 	}
 
 	.no-results {
