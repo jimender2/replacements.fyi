@@ -30,7 +30,7 @@
 	</header>
 
 	<div class="filters">
-		<FilterInput placeholder="Filter packages..." bind:value={filter} />
+		<FilterInput placeholder="Filter packages..." bind:value={filter} autofocus />
 	</div>
 
 	<ul class="package-list">
