@@ -1,7 +1,20 @@
 import { render } from 'vitest-browser-svelte';
-import { expect, test } from 'vitest';
+import { expect, test, vi, beforeEach } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import Autocomplete from './Autocomplete.svelte';
+import { goto } from '$app/navigation';
+
+vi.mock('$app/navigation', () => ({
+	goto: vi.fn()
+}));
+
+vi.mock('$app/paths', () => ({
+	resolve: (_path: string, params: Record<string, string>) => `/${params.package}`
+}));
+
+beforeEach(() => {
+	vi.clearAllMocks();
+});
 
 const items = ['apple', 'apricot', 'banana', 'blueberry', 'cherry'];
 
@@ -42,7 +55,7 @@ test('ArrowDown/ArrowUp keyboard navigation', async () => {
 		.toHaveAttribute('aria-selected', 'true');
 });
 
-test('Enter selects the active item', async () => {
+test('Enter navigates to the active item', async () => {
 	render(Autocomplete, { items });
 	const input = page.getByRole('combobox');
 	await userEvent.click(input);
@@ -50,7 +63,7 @@ test('Enter selects the active item', async () => {
 	await expect.element(page.getByRole('listbox')).toBeVisible();
 	await userEvent.keyboard('{ArrowDown}');
 	await userEvent.keyboard('{Enter}');
-	await expect.element(input).toHaveValue('cherry');
+	expect(goto).toHaveBeenCalledWith('/cherry');
 });
 
 test('Escape closes the dropdown', async () => {
@@ -71,12 +84,12 @@ test('exact match does not hide dropdown', async () => {
 	expect(page.getByRole('listbox').elements()).toHaveLength(1);
 });
 
-test('clicking a suggestion selects it', async () => {
+test('clicking a suggestion navigates to it', async () => {
 	render(Autocomplete, { items });
 	const input = page.getByRole('combobox');
 	await userEvent.click(input);
 	await userEvent.keyboard('bl');
 	await expect.element(page.getByRole('listbox')).toBeVisible();
 	await userEvent.click(page.getByRole('option', { name: 'blueberry' }));
-	await expect.element(input).toHaveValue('blueberry');
+	expect(goto).toHaveBeenCalledWith('/blueberry');
 });

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';
+	import { resolve } from '$app/paths';
+	import { goto } from '$app/navigation';
 
 	type Props = {
 		items: string[];
@@ -18,10 +20,8 @@
 	let input: HTMLInputElement;
 
 	function select(item: string) {
-		value = item;
-		open = false;
-		active_index = -1;
-		input.focus();
+		input.style.setProperty('view-transition-name', 'package-name');
+		goto(resolve('/[package]', { package: encodeURIComponent(item) }));
 	}
 
 	function handle_keydown(e: KeyboardEvent) {
@@ -60,9 +60,8 @@
 			if (filtered.length > 0) open = true;
 		}}
 		onblur={() => {
-			setTimeout(() => {
-				open = false;
-			}, 150);
+			open = false;
+			active_index = -1;
 		}}
 		{...rest}
 		autocomplete="off"
@@ -74,7 +73,12 @@
 		aria-activedescendant={active_index >= 0 ? `option-${active_index}` : undefined}
 	/>
 	{#if open && filtered.length > 0}
-		<ul id="autocomplete-list" class="suggestions" role="listbox">
+		<ul
+			id="autocomplete-list"
+			class="suggestions"
+			role="listbox"
+			onmousedown={(e) => e.preventDefault()}
+		>
 			{#each filtered as item, i (item)}
 				<li
 					{@attach (node) => {
@@ -86,7 +90,7 @@
 					role="option"
 					aria-selected={i === active_index}
 					class:active={i === active_index}
-					onmousedown={() => select(item)}
+					onclick={() => select(item)}
 				>
 					{item}
 				</li>
