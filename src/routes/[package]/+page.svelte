@@ -8,7 +8,7 @@
 		type ModuleReplacement
 	} from 'module-replacements';
 	import { highlight } from './highlight.remote';
-	import MrE18e from '$lib/MrE18e.svelte';
+	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 
 	let { params } = $props();
 
@@ -93,7 +93,7 @@
 	{/if}
 </svelte:head>
 
-<a href={resolve('/')} class="back-link"><MrE18e /></a>
+<a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
 <div class="page">
 	{#if !mapping}
 		<div class="not-found">
