@@ -1,8 +1,15 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { all, type EngineConstraint, type KnownUrl } from 'module-replacements';
+	import {
+		all,
+		resolveDocUrl,
+		nativeReplacements,
+		type EngineConstraint,
+		type KnownUrl,
+		type ModuleReplacement
+	} from 'module-replacements';
 	import { highlight } from './highlight.remote';
-	import MrE18e from '$lib/MrE18e.svelte';
+	import ReplacementsTitle from '$lib/ReplacementsTitle.svelte';
 
 	let { params } = $props();
 
@@ -31,19 +38,27 @@
 	];
 	const runtime_engines = ['nodejs', 'deno', 'bun'];
 
-	function get_url(url: KnownUrl): string {
-		if (typeof url === 'string') return url;
-		if (url.type === 'mdn') return `https://developer.mozilla.org/en-US/docs/${url.id}`;
-		if (url.type === 'e18e')
-			return `https://github.com/e18e/module-replacements/tree/main/docs/modules/${url.id}.md`;
-		return `https://nodejs.org/${url.id}`;
-	}
-
 	function get_url_display_name(url: KnownUrl): string {
 		if (typeof url === 'string') return url;
 		if (url.type === 'mdn') return `MDN`;
 		if (url.type === 'e18e') return `e18e docs`;
 		return `Node.js docs`;
+	}
+
+	function get_type_display_name(
+		type: ModuleReplacement['type'],
+		inNativeManifest: boolean
+	): string {
+		if (inNativeManifest) return 'Available natively';
+		if (type === 'native') return 'Available natively';
+		if (type === 'simple') return 'Simple or drop-in replacement';
+		if (type === 'documented') return 'Community choice';
+		if (type === 'removal') return 'Just remove it, no replacement needed';
+		return type;
+	}
+
+	function is_in_native_manifest(key: string): boolean {
+		return key in nativeReplacements.replacements;
 	}
 
 	function categorized_engines(engines: EngineConstraint[] | undefined) {
@@ -59,6 +74,10 @@
 			{ label: 'other', engines: other }
 		].filter((c) => c.engines.length > 0);
 	}
+
+	function resolveNpmUrl(moduleName: string): string {
+		return `https://npmx.dev/package/${moduleName}`;
+	}
 </script>
 
 <svelte:head>
@@ -71,7 +90,7 @@
 	{/if}
 </svelte:head>
 
-<a href={resolve('/')} class="back-link"><MrE18e /></a>
+<a href={resolve('/')} class="back-link"><ReplacementsTitle /></a>
 <div class="page">
 	{#if !mapping}
 		<div class="not-found">
@@ -99,7 +118,7 @@
 			{#each resolved_replacements as { key, data } (key)}
 				<div class="replacement">
 					<h2 class="replacement-id">{key}</h2>
-					<span class="badge">{data.type}</span>
+					<span class="badge">{get_type_display_name(data.type, is_in_native_manifest(key))}</span>
 
 					{#if data.type === 'native'}
 						<p class="description">
@@ -110,7 +129,7 @@
 							<p class="doc-link">
 								→ docs:
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={get_url(data.url)} target="_blank" rel="noopener"
+								<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
 									>{get_url_display_name(data.url)}</a
 								>
 							</p>
@@ -154,16 +173,24 @@
 						<p class="verdict">// verdict: just remove it</p>
 					{:else if data.type === 'documented'}
 						<p class="description">
-							This package has more performant alternatives.{#if data.replacementModule}
-								For your use case, we recommend <span class="teal">{data.replacementModule}</span
-								>.{/if}
+							This package provides equivalent functionality and has been flagged as more
+							performant.
 						</p>
 						{#if data.url}
 							<p class="doc-link">
 								→ docs:
 								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-								<a href={get_url(data.url)} target="_blank" rel="noopener"
+								<a href={resolveDocUrl(data.url)} target="_blank" rel="noopener"
 									>{get_url_display_name(data.url)}</a
+								>
+							</p>
+						{/if}
+						{#if data.replacementModule}
+							<p class="doc-link">
+								→ npmx:
+								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+								<a href={resolveNpmUrl(data.replacementModule)} target="_blank" rel="noopener"
+									>{key}</a
 								>
 							</p>
 						{/if}
