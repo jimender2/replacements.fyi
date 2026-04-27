@@ -16,7 +16,10 @@
 
 	let { params } = $props();
 
-	let package_name = $derived(params.package ?? '');
+	let package_name = $derived(`${params.scope ? `${params.scope}/` : ''}${params.package}`);
+	$effect(() => {
+		console.log('package_name', package_name);
+	});
 	let mapping = $derived(
 		Object.hasOwn(all.mappings, package_name) ? all.mappings[package_name] : undefined
 	);
