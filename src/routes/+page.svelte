@@ -13,6 +13,7 @@
 	}
 
 	function navigateTo(packageName: string) {
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		goto(packageHref(packageName));
 	}
 </script>
@@ -59,6 +60,7 @@
 			<span class="examples-header">// examples</span>
 			<ul class="examples-list">
 				{#each examples as name (name)}
+					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 					<li><a href={packageHref(name)}>{name}</a></li>
 				{/each}
 			</ul>

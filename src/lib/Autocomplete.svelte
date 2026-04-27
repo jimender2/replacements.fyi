@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-navigation-without-resolve */
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	type Props = {
@@ -20,7 +21,7 @@
 	let input: HTMLInputElement;
 
 	function select(item: string) {
-		input.style.setProperty('view-transition-name', 'package-name');
+		prepare_transition();
 		onSelectNavigateTo(item);
 	}
 

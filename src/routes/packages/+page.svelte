@@ -36,7 +36,13 @@
 	<ul class="package-list">
 		{#each filtered_packages as pkg (pkg)}
 			<li>
-				<a href={resolve('/[package]', { package: encodeURIComponent(pkg) })} class="package-link">
+				<a
+					onclick={(e) => {
+						e.currentTarget.style.setProperty('view-transition-name', 'package-name');
+					}}
+					href={resolve('/[package]', { package: encodeURIComponent(pkg) })}
+					class="package-link"
+				>
 					<span class="package-name">{pkg}</span>
 				</a>
 			</li>
