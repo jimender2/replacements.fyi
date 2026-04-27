@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Home page', () => {
 	test('loads with search form and example links', async ({ page }) => {
 		await page.goto('/');
-		await expect(page.getByRole('combobox')).toBeVisible();
+		await expect(page.locator('input[name="package"]')).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Search' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'is-number' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'left-pad' })).toBeVisible();
@@ -20,9 +20,17 @@ test.describe('Home page', () => {
 
 	test('typing in search shows autocomplete suggestions', async ({ page }) => {
 		await page.goto('/');
-		const input = page.getByRole('combobox');
+		const input = page.locator('input[name="package"]');
 		await input.fill('is-n');
-		await expect(page.getByRole('option', { name: /is-number/ })).toHaveCount(2);
+		await expect(page.locator('.suggestions a', { hasText: 'is-number' })).toHaveCount(2);
+	});
+
+	test('clicking an autocomplete suggestion navigates via its link', async ({ page }) => {
+		await page.goto('/');
+		const input = page.locator('input[name="package"]');
+		await input.fill('is-n');
+		await page.locator('.suggestions a', { hasText: 'is-number' }).first().click();
+		await expect(page).toHaveURL(/\/is-number/);
 	});
 
 	test('clicking an example link navigates to detail page', async ({ page }) => {
@@ -33,7 +41,7 @@ test.describe('Home page', () => {
 
 	test('submitting search navigates to detail page', async ({ page }) => {
 		await page.goto('/');
-		const input = page.getByRole('combobox');
+		const input = page.locator('input[name="package"]');
 		await input.fill('is-number');
 		await page.getByRole('button', { name: 'Search' }).click();
 		await expect(page).toHaveURL(/\/is-number/);
